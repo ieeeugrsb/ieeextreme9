@@ -2,7 +2,9 @@
 import unittest
 import time
 import sys
+import os
 
+PROGRAM = 'solution.py'
 
 # For patching the standard input and standard output with the test case
 class PatchStd(object):    
@@ -52,18 +54,24 @@ class ProgramTest(unittest.TestCase):
         cls.inputs = ["1\nhello world\n", "2\ntest1\ntest2\n"]
         cls.outputs = ["hello world\n", "test1.test2\n"]
         cls.num = 2
+        cls.programPath = PROGRAM
+        
+        if not os.path.isfile(cls.programPath):
+            raise FileNotFoundError()
     
     def test_examples(self):
         for i in range(self.num):
             with self.subTest('Test Case: %d' % i):
-                self.run_example(i)
+                print('Testing ' + str(i))
+                self.run_example(self.inputs[i], self.outputs[i])
         
-    def run_example(self, num):
-        # Import program
-        import solution        
+    def run_example(self, theInput, theOutput):
+        # Import program (decrapted in 3.4, no other way at the moment)
+        from importlib.machinery import SourceFileLoader
+        solution = SourceFileLoader("solution", self.programPath).load_module()
         
         # Feed the input
-        with PatchStd(self.inputs[num]) as std:
+        with PatchStd(theInput) as std:
             # Start time counter
             startTime = time.time()
             
@@ -75,11 +83,11 @@ class ProgramTest(unittest.TestCase):
         
             # Check output
             actual_output = std.getStdOut().getvalue()
-            self.assertEqual(actual_output, self.outputs[num])
+            self.assertEqual(actual_output, theOutput)
             
             # Print time (not do before because output is not yet retrieved)
             std.restore()
-            print("+ Test case %s: %.3f" % (num, endTime))
+            print("\tTime: %.3f" % endTime)
             
             # Show errors if any
             errors = std.getStdErr().getvalue()
@@ -96,4 +104,8 @@ class ProgramTest(unittest.TestCase):
         
         
 if __name__ == '__main__':
+    # Set the program path
+    if len(sys.argv) > 1:
+        PROGRAM = sys.argv[1]
+        
     unittest.main()
