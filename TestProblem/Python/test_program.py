@@ -107,5 +107,6 @@ if __name__ == '__main__':
     # Set the program path
     if len(sys.argv) > 1:
         PROGRAM = sys.argv[1]
+        del sys.argv[1]  # Otherwise unittest tries to load it
         
     unittest.main()
