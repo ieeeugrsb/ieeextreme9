@@ -4,7 +4,7 @@ import time
 import sys
 import os
 
-PROGRAM = 'solution.py'
+PROGRAM = ''
 
 # For patching the standard input and standard output with the test case
 class PatchStd(object):    
@@ -57,7 +57,7 @@ class ProgramTest(unittest.TestCase):
         cls.programPath = PROGRAM
         
         if not os.path.isfile(cls.programPath):
-            raise FileNotFoundError()
+            raise FileNotFoundError('Cannot find program: ' + cls.programPath)
     
     def test_examples(self):
         for i in range(self.num):
