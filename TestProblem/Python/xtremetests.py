@@ -21,6 +21,7 @@ import unittest
 import time
 import sys
 import os
+from memory_profiler import memory_usage
 
 PROGRAM = ''
 
@@ -89,7 +90,7 @@ class ProgramTest(unittest.TestCase):
         solution = SourceFileLoader("solution", self.programPath).load_module()
         
         # Feed the input
-        with PatchStd(theInput) as std:
+        with PatchStd(theInput) as std:            
             # Start time counter
             startTime = time.time()
             
@@ -98,6 +99,9 @@ class ProgramTest(unittest.TestCase):
             
             # Get end time
             endTime = time.time() - startTime
+
+            # Get memory (include current tests ~14MB but more or less is that)
+            mem = memory_usage(max_usage=True)
         
             # Check output
             actual_output = std.getStdOut().getvalue()
@@ -105,7 +109,8 @@ class ProgramTest(unittest.TestCase):
             
             # Print time (not do before because output is not yet retrieved)
             std.restore()
-            print("\tTime: %.3f" % endTime)
+            print("\tTime:   %.3f sec" % endTime)
+            print("\tMemory: %.3f MB" % mem)
             
             # Show errors if any
             errors = std.getStdErr().getvalue()
