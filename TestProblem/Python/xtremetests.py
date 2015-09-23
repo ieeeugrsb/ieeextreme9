@@ -22,6 +22,7 @@ import time
 import sys
 import os
 from memory_profiler import memory_usage
+from glob import glob
 
 PROGRAM = ''
 
@@ -70,13 +71,31 @@ class ProgramTest(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
-        cls.inputs = ["1\nhello world\n", "2\ntest1\ntest2\n"]
-        cls.outputs = ["hello world\n", "test1.test2\n"]
-        cls.num = 2
+        # Get the program script and check it exists
         cls.programPath = PROGRAM
-        
         if not os.path.isfile(cls.programPath):
-            raise FileNotFoundError('Cannot find program: ' + cls.programPath)
+            raise FileNotFoundError('Cannot find program: ' + cls.programPath)        
+        
+        programDir = os.path.dirname(os.path.abspath(cls.programPath))
+        inputs = glob(os.path.join(programDir, 'input[0-9][0-9].txt'))
+
+        cls.inputs = []
+        cls.outputs = []
+        cls.num = 0
+        
+        for inputf in inputs:
+            inId = os.path.splitext(inputf)[0][-2:]            
+            outputf = os.path.join(os.path.dirname(inputf),
+                                   'output' + inId + '.txt')
+            if os.path.isfile(outputf):
+                with open(inputf, 'r') as f:
+                    cls.inputs.append(f.read())
+                
+                with open(outputf, 'r') as f:
+                    cls.outputs.append(f.read())
+                
+                cls.num = cls.num + 1
+        
     
     def test_examples(self):
         for i in range(self.num):
