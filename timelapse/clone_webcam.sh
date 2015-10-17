@@ -1,6 +1,6 @@
 #!/bin/bash
 ############################################################################
-#  Copyright (C) 2015 IEEE Student Branch of Granada                              #
+#  Copyright (C) 2015 IEEE Student Branch of Granada                       #
 #                                                                          #
 #  This program is free software: you can redistribute it and/or modcify   #
 #  it under the terms of the GNU General Public License as published by    #
@@ -27,6 +27,9 @@
 
 # Create two virtual video devices
 sudo modprobe v4l2loopback devices=2
+
+# If you are seeing your video flipped or rotate, could be fix with this:
+export LD_PRELOAD=/usr/lib64/libv4l/v4l1compat.so
 
 # Copy original video (/dev/video0) to the new two virtual videos (/dev/video1 and /dev/video2)
 ffmpeg -f video4linux2 -s 1280x1024 -i /dev/video0 -codec copy -f v4l2 /dev/video1 -codec copy -f v4l2 /dev/video2
