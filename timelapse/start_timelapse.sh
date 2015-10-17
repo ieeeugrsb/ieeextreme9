@@ -1,6 +1,6 @@
 #!/bin/bash
 ############################################################################
-#  Copyright (C) 2015 IEEE Student Branch of Granada                              #
+#  Copyright (C) 2015 IEEE Student Branch of Granada                       #
 #                                                                          #
 #  This program is free software: you can redistribute it and/or modcify   #
 #  it under the terms of the GNU General Public License as published by    #
@@ -15,18 +15,17 @@
 #  You should have received a copy of the GNU General Public License       #
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
-# Reference: https://www.timdejong.nl/blog/use-webcam-two-applications-under-linux-simultaneously-using-v4l2loopback
 
-# You need to install v4l2loopback, in some distribution is in the default repos
-# For others like Fedora install from repo:
-
-# git submodule update --init --recursive
-# cd v4l2loopback
-# make && sudo make install
-# cd ..
-
-# Create two virtual video devices
-sudo modprobe v4l2loopback devices=2
-
-# Copy original video (/dev/video0) to the new two virtual videos (/dev/video1 and /dev/video2)
-ffmpeg -f video4linux2 -s 1280x1024 -i /dev/video0 -codec copy -f v4l2 /dev/video1 -codec copy -f v4l2 /dev/video2
+# Arguments of fswebcam:
+#   --device:    input device, edit as your needs.
+#   --loop:      take a screenshot each X seconds.
+#   --r:         resolution.
+#   --S:         skip X frames. It helps to avoid corrupted frames.
+#   --font:      font family and size for the bottom banner, increased.
+#   --title:     banner title.
+#   --timestamp: time format for the banner.
+#   --underlay:  overlay an imagen in the frame.
+#   filename:    the frame file name support time format variables.
+fswebcam --device /dev/video1 --loop 60 -r 1280x1024 -S 5 --font sans:20 \
+         --title "IEEE Student Branch of Granada" --timestamp "%d/%m/%Y %H:%M (%Z)" \
+         --underlay logo_ieeesb.png "frames/frame_%d_%m_%Y_%H_%M_%S.jpg"
