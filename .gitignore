@@ -1,5 +1,6 @@
 # Timelapse frames
 timelapse/frames/
+timelapse/timelapse.avi
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
