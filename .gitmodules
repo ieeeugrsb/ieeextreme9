@@ -1,3 +1,6 @@
 [submodule "TestProblem/Python/memory_profiler"]
 	path = TestProblem/Python/memory_profiler
 	url = https://github.com/fabianp/memory_profiler
+[submodule "timelapse/v4l2loopback"]
+	path = timelapse/v4l2loopback
+	url = https://github.com/umlaeute/v4l2loopback
