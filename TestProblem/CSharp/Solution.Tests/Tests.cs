@@ -29,8 +29,7 @@ namespace Solution.Tests
     [TestFixture]
     public class SolutionTests
     {
-        [Test, TestCaseSource("PublicCases")]
-        public string TestPublicCases(string input)
+        protected string TestSolution(string input)
         {
             // Save the standard input and output for restoring later.
             var stdIn = Console.In;
@@ -54,6 +53,12 @@ namespace Solution.Tests
 
             // Return output
             return output.ToString();
+        }
+
+        [Test, TestCaseSource("PublicCases")]
+        public string TestPublicCases(string input)
+        {
+            return TestSolution(input);
         }
 
         public IEnumerable PublicCases
