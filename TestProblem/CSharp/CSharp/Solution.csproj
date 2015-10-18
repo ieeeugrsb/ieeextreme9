@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{A931B586-40D5-4709-9CA3-D3C2931FB1C4}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CSharp</RootNamespace>
+    <RootNamespace>Solution</RootNamespace>
     <AssemblyName>CSharp</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>

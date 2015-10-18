@@ -2,9 +2,9 @@
 //  Program.cs
 //
 //  Author:
-//       Benito Palacios Sánchez (aka pleonex) <benito356@gmail.com>
+//       IEEE Student Branch of Granada
 //
-//  Copyright (c) 2015 Benito Palacios Sánchez (c) 2015
+//  Copyright (c) 2015 IEEE Student Branch of Granada (c) 2015
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,19 +21,24 @@
 using System;
 using System.Linq;
 
-namespace CSharp
+namespace Solution
 {
-    class MainClass
+    public class MainClass
     {
         public static void Main()
         {
+            // Get number of lines.
             int numLines = Convert.ToInt32(Console.ReadLine());
             string[] lines = new string[numLines];
            
+            // Read lines.
             for (int i = 0; i < numLines; i++)
                 lines[i] = Console.ReadLine();
 
+            // Aggregate them.
             string result = lines.Aggregate((working, next) => working + "." + next);
+
+            // Print result.
             Console.Write(result);
         }
     }

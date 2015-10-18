@@ -18,19 +18,42 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+using System.Collections;
 using NUnit.Framework;
 using System;
-using System.Collections;
+using System.IO;
+using System.Text;
 
-namespace UnitTests
+namespace Solution.Tests
 {
-    [TestFixture()]
+    [TestFixture]
     public class SolutionTests
     {
         [Test, TestCaseSource("PublicCases")]
         public string TestPublicCases(string input)
         {
-            return "";
+            // Save the standard input and output for restoring later.
+            var stdIn = Console.In;
+            var stdOut = Console.Out;
+
+            // Redirect the output writing to a StringBuilder.
+            var output = new StringBuilder();
+            var redirectedOutput = new StringWriter(output);
+            Console.SetOut(redirectedOutput);
+
+            // Redirect the input reading from the string.
+            var redirectedInput = new StringReader(input);
+            Console.SetIn(redirectedInput);
+
+            // Call our program.
+            MainClass.Main();
+
+            // Restore input and output.
+            Console.SetIn(stdIn);
+            Console.SetOut(stdOut);
+
+            // Return output
+            return output.ToString();
         }
 
         public IEnumerable PublicCases
