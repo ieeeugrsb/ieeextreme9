@@ -2,9 +2,9 @@
 //  AssemblyInfo.cs
 //
 //  Author:
-//       Benito Palacios Sánchez (aka pleonex) <benito356@gmail.com>
+//       IEEE Student Branch of Granada
 //
-//  Copyright (c) 2015 Benito Palacios Sánchez (c) 2015
+//  Copyright (c) 2015 IEEE Student Branch of Granada (c) 2015
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by

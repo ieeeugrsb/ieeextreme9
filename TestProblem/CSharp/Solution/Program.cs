@@ -39,7 +39,7 @@ namespace Solution
             string result = lines.Aggregate((working, next) => working + "." + next);
 
             // Print result.
-            Console.Write(result);
+            Console.WriteLine(result);
         }
     }
 }

@@ -2,9 +2,9 @@
 //  Test.cs
 //
 //  Author:
-//       Benito Palacios Sánchez (aka pleonex) <benito356@gmail.com>
+//       IEEE Student Branch of Granada
 //
-//  Copyright (c) 2015 Benito Palacios Sánchez (c) 2015
+//  Copyright (c) 2015 IEEE Student Branch of Granada (c) 2015
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,12 +23,48 @@ using NUnit.Framework;
 using System;
 using System.IO;
 using System.Text;
+using System.Reflection;
 
 namespace Solution.Tests
 {
     [TestFixture]
-    public class SolutionTests
+    public class Tests
     {
+        private string[,] publicCases;
+
+        public Tests()
+        {
+            // By default they will be in the solution directory
+            TestFilesPath = Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                "../../../");
+
+            FindTestFiles();
+        }
+
+        public string TestFilesPath {
+            get;
+            set;
+        }
+
+        public IEnumerable PublicCases {
+            get {
+                for (int i = 0; i < publicCases.GetLength(0); i++) {
+                    if (publicCases[i, 0] == null)
+                        continue;
+                    
+                    yield return new TestCaseData(publicCases[i, 0])
+                        .Returns(publicCases[i, 1]);
+                }
+            }
+        }
+
+        [Test, TestCaseSource("PublicCases")]
+        public string TestPublicCases(string input)
+        {
+            return TestSolution(input);
+        }
+
         protected string TestSolution(string input)
         {
             // Save the standard input and output for restoring later.
@@ -55,17 +91,24 @@ namespace Solution.Tests
             return output.ToString();
         }
 
-        [Test, TestCaseSource("PublicCases")]
-        public string TestPublicCases(string input)
-        {
-            return TestSolution(input);
-        }
 
-        public IEnumerable PublicCases
+        private void FindTestFiles()
         {
-            get
-            {
-                yield return new TestCaseData("2\nHello\nWorld").Returns("Hello.World");
+            var inputs = Directory.GetFiles(TestFilesPath, "input*.txt");
+
+            publicCases = new string[inputs.Length, 2];
+            foreach (string inputFile in inputs) {
+                string filename = Path.GetFileNameWithoutExtension(inputFile);
+                string num = filename.Substring(5, 2);
+
+                string outputFile = Path.Combine(TestFilesPath,
+                    "output" + num + ".txt");
+                if (!File.Exists(outputFile))
+                    continue;
+
+                int idx = Convert.ToInt32(num) - 1;
+                publicCases[idx, 0] = File.ReadAllText(inputFile);
+                publicCases[idx, 1] = File.ReadAllText(outputFile);
             }
         }
     }
