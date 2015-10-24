@@ -19,9 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Collections;
 
 namespace Solution
 {
@@ -34,66 +32,61 @@ namespace Solution
             int rows = Convert.ToInt32(dimensions[0]);
             int cols = Convert.ToInt32(dimensions[1]);
 
-            List<Layer> layers = new List<Layer>();
+            Dictionary<int, Cube> cubes = new Dictionary<int, Cube>(rows * cols);
 
             // Get number of queries
             int numQueries = Convert.ToInt32(Console.ReadLine());
             for (int i = 0; i < numQueries; i++) {
                 Query query = Query.FromString(Console.ReadLine());
-                ProcessQuery(layers, query);
+                ProcessQuery(cubes, cols, query);
             }
         }
 
-        private static void ProcessQuery(List<Layer> layers, Query query)
+        private static void ProcessQuery(Dictionary<int, Cube> cubes, int cols,
+            Query query)
         {
             switch (query.Operation) {
             case Operations.Add:
             case Operations.Remove:
-                IntersectLayer(layers, query.Layer);
+                IntersectLayer(cubes, cols, query);
                 break;
 
             case Operations.Question:
-                ShowLayer(layers, query.Layer);
+                PrintCount(cubes, query);
                 break;
             }
         }
 
-        private static void IntersectLayer(List<Layer> layers, Layer newLayer)
+        private static void IntersectLayer(Dictionary<int, Cube> cubes, int cols,
+            Query query)
         {
-            Queue<Layer> layersToProcess = new Queue<Layer>();
-            layersToProcess.Enqueue(newLayer);
-
-            while (layersToProcess.Count > 0) {
-                Layer currentLayer = layersToProcess.Dequeue();
-                foreach (Layer l in layers) {
-                    
-                }
+            foreach (Cube cube in query.GetCubes()) {
+                int idx = cube.Y * cols + cube.X;
+                if (!cubes.ContainsKey(idx))
+                    cubes.Add(idx, cube);
+                
+                cubes[idx].Value += (int)query.Operation;
             }
         }
 
-        private static void IntersectLayer(Layer layer1, Layer layer2)
-        {
-            
-        }
-
-        private static void ShowLayer(List<Layer> layers, Layer newLayer)
+        private static void PrintCount(Dictionary<int, Cube> cubes, Query query)
         {
             int count = 0;
-            foreach (Layer l in layers)
-                if (l.Intersect(newLayer))
-                    count += l.NumBlocks * l.Value;
+            foreach (Cube cube in cubes.Values)
+                if (cube.X >= query.Start.X && cube.X <= query.End.X &&
+                        cube.Y >= query.Start.Y && cube.Y <= query.End.Y)
+                    count += cube.Value;
 
             Console.WriteLine(count);
         }
     }
 
-    public class Layer
+    public class Cube
     {
-        public Layer(int value, Point start, Point end)
+        public Cube(Point position, int value)
         {
             Value = value;
-            Start = start;
-            End = end;
+            Position = position;
         }
 
         public int Value {
@@ -101,98 +94,33 @@ namespace Solution
             set;
         }
 
-        public int Left {
-            get { return Start.X; }
+        public int X {
+            get { return Position.X; }
         }
 
-        public int Right {
-            get { return End.X; }
+        public int Y {
+            get { return Position.Y; }
         }
 
-        public int Top {
-            get { return Start.Y; }
-        }
-
-        public int Bottom {
-            get { return End.Y; }
-        }
-
-        public Point Start {
+        public Point Position {
             get;
             private set;
-        }
-
-        public Point End {
-            get;
-            private set;
-        }
-
-        public int Width {
-            get {
-                return End.X - Start.X + 1;
-            }
-        }
-
-        public int Height {
-            get {
-                return End.Y - Start.Y + 1;
-            }
-        }
-
-        public int NumBlocks {
-            get {
-                return Width * Height;
-            }
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-                return false;
-            if (ReferenceEquals(this, obj))
-                return true;
-            if (obj.GetType() != typeof(Layer))
-                return false;
-            Layer other = (Layer)obj;
-            return Start == other.Start && End == other.End;
-        }
-
-        public static bool operator !=(Layer layer1, Layer layer2)
-        {
-            return !layer1.Equals(layer2);
-        }
-
-        public static bool operator ==(Layer layer1, Layer layer2)
-        {
-            return layer1.Equals(layer2);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked {
-                return (Start != null ? Start.GetHashCode() : 0) ^ (End != null ? End.GetHashCode() : 0);
-            }
-        }
-
-        public bool Intersect(Layer rect)
-        {
-            return this.Left <= rect.Right && this.Right >= rect.Left &&
-                this.Top <= rect.Bottom && this.Bottom >= rect.Top;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("[Layer: Value={0}, Start={1}, End={2}]", Value, Start, End);
         }
     }
 
     public class Query
     {
+        private List<Cube> cubes = new List<Cube>();
+
         public Query(Operations operation, Point start, Point end)
         {
             Operation = operation;
             Start = start;
             End = end;
+
+            for (int y = start.Y; y < end.Y + 1; y++)
+                for (int x = start.X; x < end.X + 1; x++)
+                    cubes.Add(new Cube(new Point(x, y), 0));
         }
 
         public Operations Operation {
@@ -210,11 +138,11 @@ namespace Solution
             private set;
         }
 
-        public Layer Layer {
-            get {
-                return new Layer((int)Operation, Start, End);
-            }
+        public List<Cube> GetCubes()
+        {
+            return cubes;
         }
+
 
         public static Query FromString(string data)
         {
@@ -307,15 +235,6 @@ namespace Solution
         public override string ToString()
         {
             return string.Format("[Point: X={0}, Y={1}]", X, Y);
-        }
-    }
-
-    public static class IntExtensions
-    {
-        public static bool DiffPositive(this int f, int s, int max)
-        {
-            int diff = s - f;
-            return diff >= 0 && diff < max;
         }
     }
 }

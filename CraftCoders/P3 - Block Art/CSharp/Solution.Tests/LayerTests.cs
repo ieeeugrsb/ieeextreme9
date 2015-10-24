@@ -26,6 +26,7 @@ namespace Solution.Tests
     [TestFixture]
     public class LayerTests
     {
+        /*
         [Test]
         public void TestSame()
         {
@@ -104,6 +105,7 @@ namespace Solution.Tests
             Assert.IsTrue(layer1.Intersect(layer2));
             Assert.IsTrue(layer2.Intersect(layer1));
         }
+*/
     }
 }
 
