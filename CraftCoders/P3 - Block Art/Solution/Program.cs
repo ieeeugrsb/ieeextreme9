@@ -20,6 +20,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Solution
 {
@@ -31,55 +33,55 @@ namespace Solution
             string[] dimensions = Console.ReadLine().Split(' ');
             int rows = Convert.ToInt32(dimensions[0]);
             int cols = Convert.ToInt32(dimensions[1]);
-            var matrix = new int[cols][];
-            for (int i = 0; i < cols; i++)
-                matrix[i] = new int[rows];
+
+            List<Layer> layers = new List<Layer>();
 
             // Get number of queries
             int numQueries = Convert.ToInt32(Console.ReadLine());
             for (int i = 0; i < numQueries; i++) {
                 Query query = Query.FromString(Console.ReadLine());
-                ProcessQuery(matrix, query);
+                ProcessQuery(layers, query);
             }
         }
 
-        private static void ProcessQuery(int[][] matrix, Query query)
+        private static void ProcessQuery(List<Layer> layers, Query query)
         {
             switch (query.Operation) {
             case Operations.Add:
-                AddLayer(matrix, query.Start, query.End);
-                break;
-
             case Operations.Remove:
-                RemoveLayer(matrix, query.Start, query.End);
+                IntersectLayer(layers, query.Layer);
                 break;
 
             case Operations.Question:
-                ShowLayer(matrix, query.Start, query.End);
+                ShowLayer(layers, query.Layer);
                 break;
             }
         }
 
-        private static void AddLayer(int[][] matrix, Point start, Point end)
+        private static void IntersectLayer(List<Layer> layers, Layer newLayer)
         {
-            for (int x = start.X; x <= end.X; x++)
-                for (int y = start.Y; y <= end.Y; y++)
-                    matrix[x][y]++;
+            Queue<Layer> layersToProcess = new Queue<Layer>();
+            layersToProcess.Enqueue(newLayer);
+
+            while (layersToProcess.Count > 0) {
+                Layer currentLayer = layersToProcess.Dequeue();
+                foreach (Layer l in layers) {
+                    
+                }
+            }
         }
 
-        private static void RemoveLayer(int[][] matrix, Point start, Point end)
+        private static void IntersectLayer(Layer layer1, Layer layer2)
         {
-            for (int x = start.X; x <= end.X; x++)
-                for (int y = start.Y; y <= end.Y; y++)
-                    matrix[x][y]--;
+            
         }
 
-        private static void ShowLayer(int[][] matrix, Point start, Point end)
+        private static void ShowLayer(List<Layer> layers, Layer newLayer)
         {
             int count = 0;
-            for (int x = start.X; x <= end.X; x++)
-                for (int y = start.Y; y <= end.Y; y++)
-                    count += matrix[x][y];
+            foreach (Layer l in layers)
+                if (l.Intersect(newLayer))
+                    count += l.NumBlocks * l.Value;
 
             Console.WriteLine(count);
         }
@@ -99,6 +101,22 @@ namespace Solution
             set;
         }
 
+        public int Left {
+            get { return Start.X; }
+        }
+
+        public int Right {
+            get { return End.X; }
+        }
+
+        public int Top {
+            get { return Start.Y; }
+        }
+
+        public int Bottom {
+            get { return End.Y; }
+        }
+
         public Point Start {
             get;
             private set;
@@ -107,6 +125,24 @@ namespace Solution
         public Point End {
             get;
             private set;
+        }
+
+        public int Width {
+            get {
+                return End.X - Start.X + 1;
+            }
+        }
+
+        public int Height {
+            get {
+                return End.Y - Start.Y + 1;
+            }
+        }
+
+        public int NumBlocks {
+            get {
+                return Width * Height;
+            }
         }
 
         public override bool Equals(object obj)
@@ -138,15 +174,10 @@ namespace Solution
             }
         }
 
-        public bool Intersect(Layer other)
+        public bool Intersect(Layer rect)
         {
-            bool intersectVertical = (((other.End.X - Start.X) > 0) ||
-                ((End.X - other.Start.X) > 0));
-
-            bool intersectHorizontal = (((other.End.Y - Start.Y) > 0) ||
-                ((End.Y - other.Start.Y) > 0));
-
-            return intersectVertical && intersectHorizontal;
+            return this.Left <= rect.Right && this.Right >= rect.Left &&
+                this.Top <= rect.Bottom && this.Bottom >= rect.Top;
         }
 
         public override string ToString()
@@ -177,6 +208,12 @@ namespace Solution
         public Point End {
             get;
             private set;
+        }
+
+        public Layer Layer {
+            get {
+                return new Layer((int)Operation, Start, End);
+            }
         }
 
         public static Query FromString(string data)
@@ -214,10 +251,10 @@ namespace Solution
         }
     }
 
-    public enum Operations {
-        Add,
-        Remove,
-        Question
+    public enum Operations : int {
+        Add = 1,
+        Remove = -1,
+        Question = 0
     }
 
     public class Point
@@ -270,6 +307,15 @@ namespace Solution
         public override string ToString()
         {
             return string.Format("[Point: X={0}, Y={1}]", X, Y);
+        }
+    }
+
+    public static class IntExtensions
+    {
+        public static bool DiffPositive(this int f, int s, int max)
+        {
+            int diff = s - f;
+            return diff >= 0 && diff < max;
         }
     }
 }

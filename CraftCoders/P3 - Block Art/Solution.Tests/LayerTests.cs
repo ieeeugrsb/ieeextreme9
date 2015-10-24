@@ -99,7 +99,7 @@ namespace Solution.Tests
         public void IntersectBorderTop()
         {
             Layer layer1 = new Layer(0, new Point(4, 4), new Point(7, 6));
-            Layer layer2 = new Layer(0, new Point(4, 3), new Point(7, 4));
+            Layer layer2 = new Layer(0, new Point(5, 6), new Point(6, 7));
 
             Assert.IsTrue(layer1.Intersect(layer2));
             Assert.IsTrue(layer2.Intersect(layer1));
