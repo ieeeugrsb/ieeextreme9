@@ -3,13 +3,13 @@
 
 
 def main():
-
     carretera = []
     cadena = input().split(" ")
     largo = int(cadena[0])
     vacas = int(cadena[1])
     i =0
-
+    var_x = []
+    var_y = []
 
     if not 2<= largo:
         print(0)
@@ -31,21 +31,26 @@ def main():
         print(0)
         return
 
-
-
-    while i<4:
-        carretera.append([0]*largo)
-        i+=1
-
     i = 0
 
-    var_x = []
-    var_y = []
 
+
+    pos = []
     while(i<vacas):
         cadena = input().split(" ")
         var_x.append(int(cadena[0]))
         var_y.append(int(cadena[1]))
+        i+=1
+        pos.append(int(cadena[1]))
+
+
+    for posiciones in pos:
+        if pos.count(posiciones)==4:
+            print(0)
+            return
+
+    while i<4:
+        carretera.append([0]*largo)
         i+=1
 
 
