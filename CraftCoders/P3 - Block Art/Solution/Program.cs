@@ -85,6 +85,76 @@ namespace Solution
         }
     }
 
+    public class Layer
+    {
+        public Layer(int value, Point start, Point end)
+        {
+            Value = value;
+            Start = start;
+            End = end;
+        }
+
+        public int Value {
+            get;
+            set;
+        }
+
+        public Point Start {
+            get;
+            private set;
+        }
+
+        public Point End {
+            get;
+            private set;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != typeof(Layer))
+                return false;
+            Layer other = (Layer)obj;
+            return Start == other.Start && End == other.End;
+        }
+
+        public static bool operator !=(Layer layer1, Layer layer2)
+        {
+            return !layer1.Equals(layer2);
+        }
+
+        public static bool operator ==(Layer layer1, Layer layer2)
+        {
+            return layer1.Equals(layer2);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked {
+                return (Start != null ? Start.GetHashCode() : 0) ^ (End != null ? End.GetHashCode() : 0);
+            }
+        }
+
+        public bool Intersect(Layer other)
+        {
+            bool intersectVertical = (((other.End.X - Start.X) > 0) ||
+                ((End.X - other.Start.X) > 0));
+
+            bool intersectHorizontal = (((other.End.Y - Start.Y) > 0) ||
+                ((End.Y - other.Start.Y) > 0));
+
+            return intersectVertical && intersectHorizontal;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("[Layer: Value={0}, Start={1}, End={2}]", Value, Start, End);
+        }
+    }
+
     public class Query
     {
         public Query(Operations operation, Point start, Point end)
@@ -137,6 +207,11 @@ namespace Solution
 
             return new Query(operation, start, end);
         }
+
+        public override string ToString()
+        {
+            return string.Format("[Query: Operation={0}, Start={1}, End={2}]", Operation, Start, End);
+        }
     }
 
     public enum Operations {
@@ -161,6 +236,40 @@ namespace Solution
         public int Y {
             get;
             private set;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != typeof(Point))
+                return false;
+            Point other = (Point)obj;
+            return X == other.X && Y == other.Y;
+        }
+
+        public static bool operator !=(Point point1, Point point2)
+        {
+            return !point1.Equals(point2);
+        }
+
+        public static bool operator ==(Point point1, Point point2)
+        {
+            return point1.Equals(point2);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked {
+                return X.GetHashCode() ^ Y.GetHashCode();
+            }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("[Point: X={0}, Y={1}]", X, Y);
         }
     }
 }
