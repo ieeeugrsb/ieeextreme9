@@ -23,50 +23,60 @@ TIME_PER_ROUND = 5
 MAX_ROUNDS = MAX_TIME / TIME_PER_ROUND
 
 
+def update_game(game, i, j):
+    win = 0
+    lose = 0
+    if game[i] <= game[j]:
+        win = i
+        lose = j
+    else:
+        win = j
+        lose = i
+
+    # Update status
+    game[lose] -= game[win]
+    game[win] += game[win]
+
+
 def play(game, rounds):
-    print("Playing... " + str(rounds) + " -> ", end="")
-    print(game)
     if rounds >= MAX_ROUNDS:
-        return False
+        return None
 
-    if game[0] == game[1] or game[0] == game[2] or game[1] == game[2]:
-        print(rounds)
-        return True
+    for i in range(3):
+        if game[i] == 0:
+            return [game]
 
+    best_guess = None
     for i in range(3):
         for j in range(i + 1, 3):
             # i vs j
-            win = 0
-            lose = 0
-            if game[i] < game[j]:
-                win = i
-                lose = j
-            else:
-                win = j
-                lose = i
-
-            print("\tWin: " + str(win))
-            print("\tLose: " + str(lose))
-
-            # Update status
             new_game = game[:]
-            double = game[win] * 2
-            new_game[lose] -= game[win]
-            new_game[win] = double
+            update_game(new_game, i, j)
 
             # Play again
             result = play(new_game, rounds + 1)
+            if result is not None:
+                current_guess = [game] + result
+                if best_guess is None or len(best_guess) > len(current_guess):
+                    best_guess = current_guess
+                elif len(best_guess) == len(current_guess):
+                    #print(current_guess)
+                    pass
 
-            if result:
-                return True
+    return best_guess
 
 
 def main():
-    game = [1, 4, 6]
+    game = [3, 27, 8]
     result = play(game, 0)
 
     if not result:
         print("Ok")
+    else:
+        #print(result)
+        for g in result:
+            r = str(g).replace('[', '').replace(']', '').replace(',', '')
+            print(r)
 
 
 if __name__ == '__main__':
