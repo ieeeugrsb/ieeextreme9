@@ -60,20 +60,20 @@ def play(game, rounds):
                 if best_guess is None or len(best_guess) > len(current_guess):
                     best_guess = current_guess
                 elif len(best_guess) == len(current_guess):
-                    #print(current_guess)
+                    # print(current_guess)
                     pass
 
     return best_guess
 
 
 def main():
-    game = [3, 27, 8]
+    game = [int(value) for value in input().split()]
     result = play(game, 0)
 
     if not result:
         print("Ok")
     else:
-        #print(result)
+        # print(result)
         for g in result:
             r = str(g).replace('[', '').replace(']', '').replace(',', '')
             print(r)
