@@ -125,6 +125,9 @@ def f(I):
 
     e = (not c95) | y9
     a = 10*[0]
+    # print("y9 -> " + str(y9))
+    # print("c95 -> " + str(c95))
+    # print("e -> " + str(e))
 
     # Bit vector, determine the index of the M vector to set to 1.
     a[0] = e | (
@@ -178,11 +181,24 @@ def f(I):
         c2 ^ c3 ^ c4 ^ (c0 & ((c2 & c3) ^ ((c2 ^ c3) & c7)) & c4 & c8) ^
         ((((c0 ^ c1) & c3 & c5) ^ (((c0 ^ c1) & (c4 ^ c5)) & c6)) & c7 & c8))
 
+    # print("a -> " + str(a))
     M[sum([a[i] << i for i in range(8)])] = 1
 
 
 # Read a range
-output = int(input())
+# output = int(input())
+
+abc = [c for c in "abcdefghijklmnopqrstuvwxyz"]
+import itertools
+p = itertools.permutations(abc, 10)
+for t in p:
+    t = ''.join(t)
+
+    f([(ord(c) & 1) for c in t])
+    if M[255] != 1:
+        print(t + ' ' + str(M[255]))
+
+exit()
 
 # For each iteration...
 for i in range(output):
@@ -192,6 +208,7 @@ for i in range(output):
     # For each char, convert to ASCII and get the last bit.
     # Must be a string of 9 chars.
     vector = [(ord(c) & 1) for c in argument]
+    print("vector -> " + str(vector))
 
     # Call the function, the argument is 0 or 1.
     f(vector)
