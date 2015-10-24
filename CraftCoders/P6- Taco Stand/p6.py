@@ -6,44 +6,32 @@ Created on Sat Oct 24 09:45:04 2015
 """
 
 
-dias=int(input())
+dias = int(input())
 
 for n in range(dias):
-    ingredientes=[]
-    ingredient=input()
-    ingredient=ingredient.split()
-    for i in ingredient:
-        ingredientes.append(int(i))
-    tacos_disp=ingredientes[0]
-    comida=ingredientes[1:4]
+    ingredientes = [int(i) for i in input().split()]
+    tacos_disp = ingredientes[0]
+    comida = ingredientes[1:4]
     
-    pcomida=[]
-    tacos=0
-    encontrado=False
-    while not encontrado:
-        ind_max=comida.index(max(comida))
-        comida[ind_max]-=1
-        pcomida=comida[:]
-        pcomida[ind_max]=-1
-        ind_max=pcomida.index(max(pcomida))
-        if comida[ind_max]!=0:
-            comida[ind_max]-=1
-            tacos=tacos+1
+    pcomida = []
+    tacos = 0
+    encontrado = False
+    while not encontrado and tacos < tacos_disp:
+        ind_max = comida.index(max(comida))
+        comida[ind_max]-= 1
+        
+        pcomida = comida[:]
+        pcomida[ind_max] = -1
+        ind_max = pcomida.index(max(pcomida))
+        
+        if comida[ind_max] != 0:
+            comida[ind_max] -= 1
+            tacos += 1
         else:
             encontrado=True
     
-    if tacos>tacos_disp:
-        creados=tacos_disp
+    if tacos > tacos_disp:
+        creados = tacos_disp
     else:
-        creados=tacos
-    
+        creados = tacos
     print(creados)
-
-    
-        
-
-
-
-
-
-    
