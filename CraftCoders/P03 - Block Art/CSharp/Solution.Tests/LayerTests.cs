@@ -26,16 +26,6 @@ namespace Solution.Tests
     [TestFixture]
     public class LayerTests
     {
-        /*
-        [Test]
-        public void TestSame()
-        {
-            Layer layer1 = new Layer(0, new Point(4, 4), new Point(7, 6));
-            Layer layer2 = new Layer(0, new Point(4, 4), new Point(7, 6));
-
-            Assert.AreEqual(layer1, layer2);
-        }
-
         [Test]
         public void IntersectLT()
         {
@@ -105,7 +95,86 @@ namespace Solution.Tests
             Assert.IsTrue(layer1.Intersect(layer2));
             Assert.IsTrue(layer2.Intersect(layer1));
         }
-*/
+
+        [Test]
+        public void IntersectedAreaSame()
+        {
+            Layer layer1 = new Layer(0, new Point(1, 1), new Point(6, 5));
+            Layer layer2 = new Layer(0, new Point(1, 1), new Point(6, 5));
+
+            Assert.AreEqual(30, layer1.IntersectedArea(layer2));
+            Assert.AreEqual(30, layer2.IntersectedArea(layer1));
+        }
+
+        [Test]
+        public void NotIntersected()
+        {
+            Layer layer1 = new Layer(0, new Point(1, 1), new Point(6, 5));
+            Layer layer2 = new Layer(0, new Point(0, 0), new Point(0, 6));
+
+            Assert.AreEqual(0, layer1.IntersectedArea(layer2));
+            Assert.AreEqual(0, layer2.IntersectedArea(layer1));
+        }
+
+        [Test]
+        public void IntersectedAreaLT()
+        {
+            Layer layer1 = new Layer(0, new Point(1, 1), new Point(6, 5));
+            Layer layer2 = new Layer(0, new Point(1, 0), new Point(3, 3));
+
+            Assert.AreEqual(9, layer1.IntersectedArea(layer2));
+            Assert.AreEqual(9, layer2.IntersectedArea(layer1));
+        }
+
+        [Test]
+        public void IntersectedAreaLT2()
+        {
+            Layer layer1 = new Layer(0, new Point(1, 1), new Point(6, 5));
+            Layer layer2 = new Layer(0, new Point(0, 0), new Point(3, 3));
+
+            Assert.AreEqual(9, layer1.IntersectedArea(layer2));
+            Assert.AreEqual(9, layer2.IntersectedArea(layer1));
+        }
+
+        [Test]
+        public void IntersectedAreaInsideTop()
+        {
+            Layer layer1 = new Layer(0, new Point(1, 1), new Point(6, 5));
+            Layer layer2 = new Layer(0, new Point(2, 0), new Point(3, 3));
+
+            Assert.AreEqual(6, layer1.IntersectedArea(layer2));
+            Assert.AreEqual(6, layer2.IntersectedArea(layer1));
+        }
+
+        [Test]
+        public void IntersectedAreaInside()
+        {
+            Layer layer1 = new Layer(0, new Point(1, 1), new Point(6, 5));
+            Layer layer2 = new Layer(0, new Point(4, 4), new Point(4, 5));
+
+            Assert.AreEqual(2, layer1.IntersectedArea(layer2));
+            Assert.AreEqual(2, layer2.IntersectedArea(layer1));
+        }
+
+        [Test]
+        public void IntersectedAreaLB()
+        {
+            Layer layer1 = new Layer(0, new Point(1, 1), new Point(6, 5));
+            Layer layer2 = new Layer(0, new Point(0, 5), new Point(2, 6));
+
+            Assert.AreEqual(2, layer1.IntersectedArea(layer2));
+            Assert.AreEqual(2, layer2.IntersectedArea(layer1));
+        }
+
+        [Test]
+        public void IntersectedAreaRight()
+        {
+            Layer layer1 = new Layer(0, new Point(1, 1), new Point(6, 5));
+            Layer layer2 = new Layer(0, new Point(6, 0), new Point(9, 6));
+
+            Assert.AreEqual(5, layer1.IntersectedArea(layer2));
+            Assert.AreEqual(5, layer2.IntersectedArea(layer1));
+        }
     }
 }
 
